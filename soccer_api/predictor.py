@@ -137,7 +137,7 @@ def _feature_frame(row: dict[str, Any], feature_columns: list[str]) -> pd.DataFr
         frame = pd.get_dummies(frame, columns=["tournament_tier"], dtype=float)
 
     bool_cols = frame.select_dtypes(include=["bool"]).columns
-    frame.loc[:, bool_cols] = frame.loc[:, bool_cols].astype(float)
+    frame[bool_cols] = frame[bool_cols].astype(float)
     frame = frame.reindex(columns=feature_columns, fill_value=0.0)
 
     assert list(frame.columns) == feature_columns, (
