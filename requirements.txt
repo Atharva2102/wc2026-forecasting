@@ -11,3 +11,4 @@ fastapi
 uvicorn
 anthropic>=0.111.0
 python-dotenv
+scikit-learn
