@@ -1,0 +1,79 @@
+{
+  "split_date": "2022-01-01",
+  "feature_columns": [
+    "neutral",
+    "home_elo",
+    "away_elo",
+    "elo_diff",
+    "is_major_tournament",
+    "is_qualifier",
+    "is_friendly",
+    "home_is_host",
+    "away_is_host",
+    "home_prior_matches",
+    "home_has_min_history",
+    "home_unbeaten_streak",
+    "home_winning_streak",
+    "home_clean_sheet_rate_l5",
+    "home_draw_rate_l10",
+    "home_major_prior_matches",
+    "home_major_win_rate",
+    "home_last5_ppg",
+    "home_last5_gf_avg",
+    "home_last5_ga_avg",
+    "home_last5_win_rate",
+    "home_last10_ppg",
+    "home_last10_gf_avg",
+    "home_last10_ga_avg",
+    "home_last10_win_rate",
+    "away_prior_matches",
+    "away_has_min_history",
+    "away_unbeaten_streak",
+    "away_winning_streak",
+    "away_clean_sheet_rate_l5",
+    "away_draw_rate_l10",
+    "away_major_prior_matches",
+    "away_major_win_rate",
+    "away_last5_ppg",
+    "away_last5_gf_avg",
+    "away_last5_ga_avg",
+    "away_last5_win_rate",
+    "away_last10_ppg",
+    "away_last10_gf_avg",
+    "away_last10_ga_avg",
+    "away_last10_win_rate",
+    "h2h_count",
+    "h2h_home_win_rate",
+    "h2h_home_avg_gf",
+    "h2h_away_avg_gf",
+    "tournament_tier_continental_final",
+    "tournament_tier_continental_qual",
+    "tournament_tier_friendly",
+    "tournament_tier_minor",
+    "tournament_tier_wc_qual_nations",
+    "tournament_tier_world_cup"
+  ],
+  "one_hot_encoding": "pandas.get_dummies(tournament_tier)",
+  "labels": [
+    "home_goals",
+    "away_goals"
+  ],
+  "train_rows": 19723,
+  "test_rows": 4460,
+  "home_metrics": {
+    "mae": 1.0257596534213276,
+    "rmse": 1.354065670486338
+  },
+  "away_metrics": {
+    "mae": 0.8425582397979738,
+    "rmse": 1.112760116014761
+  },
+  "home_mean_baseline_metrics": {
+    "mae": 1.2064604753413248,
+    "rmse": 1.558427502547094
+  },
+  "away_mean_baseline_metrics": {
+    "mae": 0.9271545433400581,
+    "rmse": 1.2755462150941983
+  }
+}

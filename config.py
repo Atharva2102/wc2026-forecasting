@@ -1,6 +1,7 @@
-"""Project-wide configuration. All values are tunable placeholders — calibrate against backtest metrics."""
+"""Project-wide configuration. Tune these values against backtest metrics."""
 
 from __future__ import annotations
+
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
@@ -16,82 +17,124 @@ OUTPUTS_DIR = ROOT_DIR / "outputs"
 # Data sources
 # ---------------------------------------------------------------------------
 
-# URL for the ~49K international results dataset.
-RESULTS_URL: str = "https://raw.githubusercontent.com/martj42/international_results/master/results.csv"
+RESULTS_URL: str = (
+    "https://raw.githubusercontent.com/martj42/international_results/master/results.csv"
+)
 
-# Local filename after download
 RESULTS_FILENAME: str = "results.csv"
 FIXTURES_FILENAME: str = "wc2026_fixtures.csv"
+MARKET_PROBS_PATH = DATA_RAW / "market_probs.csv"
 
-# Earliest year to include in Elo training data.
 ELO_START_YEAR: int = 2000
 MIN_YEAR: int = ELO_START_YEAR
+
+# Keep early rows but flag teams with fewer prior matches than this threshold.
+MIN_HISTORY: int = 5
 
 # ---------------------------------------------------------------------------
 # Elo parameters
 # ---------------------------------------------------------------------------
 
-# Default starting rating for any team with no prior history.
-ELO_INITIAL_RATING: float = 1500.0  # TODO: tune
+DEFAULT_RATING: float = 1500.0
+ELO_INITIAL_RATING: float = DEFAULT_RATING
 
-# Base K-factor — controls how fast ratings move after each result.
-# Higher K = more reactive; lower K = more stable.
-K_BASE: float = 20.0  # TODO: tune
+K_BASE: float = 40.0
 
-# Elo points added to the home team's effective rating at non-neutral venues.
-HOME_ADVANTAGE: float = 100.0  # TODO: tune
+# Historical Elo home advantage, used only in Elo expected-score calculations.
+ELO_HOME_ADVANTAGE: float = 65.0
+HOME_ADVANTAGE: float = ELO_HOME_ADVANTAGE
 
-# Per-tournament importance multiplier applied to K_BASE.
-# Friendlies matter less; World Cup matches matter more.
+# Light annual pull toward 1500; 0.25 over-compressed the rating spread.
+REGRESSION_STRENGTH: float = 0.03
+USE_MARGIN_OF_VICTORY: bool = True
+
 TOURNAMENT_WEIGHTS: dict[str, float] = {
-    "FIFA World Cup": 4.0,
-    "UEFA Euro": 3.0,
-    "Copa America": 3.0,
-    "Africa Cup of Nations": 2.5,
-    "AFC Asian Cup": 2.5,
-    "CONCACAF Gold Cup": 2.0,
-    "Nations League": 1.5,
-    "Friendly": 0.5,
-}  # TODO: tune multipliers
+    "world_cup": 1.0,
+    "continental_final": 0.85,
+    "wc_qual_nations": 0.7,
+    "continental_qual": 0.55,
+    "friendly": 0.3,
+    "minor": 0.15,
+}
 
-# Annual decay factor applied to match K so older games carry less weight.
-# 1.0 = no decay; 0.95 = 5% reduction per year.
-RECENCY_DECAY: float = 0.98  # TODO: tune
+EXCLUDED_TOURNAMENT_PATTERNS: list[str] = [
+    "CONIFA",
+    "ConIFA",
+    "Viva World Cup",
+    "Island Games",
+    "Olympic",
+    "U-",
+    "U23",
+    "U21",
+    "U20",
+    "U17",
+    "U19",
+    "Youth",
+    "Universiade",
+]
+
+TOURNAMENT_TIER_PATTERNS: dict[str, list[str]] = {
+    "wc_qual_nations": [
+        "FIFA World Cup qualification",
+        "UEFA Nations League",
+        "CONCACAF Nations League",
+        "African Nations Championship",
+    ],
+    "continental_qual": [
+        "UEFA Euro qualification",
+        "Copa América qualification",
+        "Copa America qualification",
+        "African Cup of Nations qualification",
+        "Africa Cup of Nations qualification",
+        "AFC Asian Cup qualification",
+        "CONCACAF Gold Cup qualification",
+        "OFC Nations Cup qualification",
+    ],
+    "world_cup": ["FIFA World Cup"],
+    "continental_final": [
+        "UEFA Euro",
+        "Copa América",
+        "Copa America",
+        "African Cup of Nations",
+        "Africa Cup of Nations",
+        "AFC Asian Cup",
+        "CONCACAF Gold Cup",
+        "Gold Cup",
+        "OFC Nations Cup",
+    ],
+    "friendly": ["Friendly"],
+}
+
+# Annual decay factor kept for compatibility with earlier placeholders.
+RECENCY_DECAY: float = 0.98
 
 # ---------------------------------------------------------------------------
 # Poisson model parameters
 # ---------------------------------------------------------------------------
 
-# Average goals per team per match used as the baseline lambda.
-BASE_GOALS: float = 1.3  # TODO: tune (typically 1.1–1.5 for international football)
-
-# Scaling factor that maps Elo rating difference to lambda offset.
-# Higher spread = larger favourites get a bigger lambda boost.
-SPREAD: float = 400.0  # TODO: tune
+BASE_GOALS: float = 1.35
+SPREAD: float = 0.0024
+MAX_GOALS: int = 8
 
 # ---------------------------------------------------------------------------
 # Host-nation advantage
 # ---------------------------------------------------------------------------
 
-# Teams hosting WC 2026 — they receive a lambda boost in Poisson model.
 HOSTS: set[str] = {"USA", "Mexico", "Canada"}
-
-# Additional expected goals awarded to a host nation per match.
-HOST_ADV: float = 0.2  # TODO: tune
+HOST_ADV_MEXICO_HOME: float = 0.22
+HOST_ADV_US_CAN_HOME: float = 0.10
+HOST_ADV_AWAY: float = 0.0
 
 # ---------------------------------------------------------------------------
 # Monte Carlo simulation
 # ---------------------------------------------------------------------------
 
-# Number of full-tournament simulations. Higher = tighter confidence intervals.
-# 10 000 is fast; 100 000 is preferred for final submission.
-N_SIMS: int = 10_000  # TODO: increase to 100_000 for final run
-
-# Random seed for reproducibility.
+N_SIMS: int = 10_000
 RANDOM_SEED: int = 42
 
 # ---------------------------------------------------------------------------
 # Submission output
 # ---------------------------------------------------------------------------
 
+MARKET_WEIGHT: float = 0.30
 SUBMISSION_FILENAME: str = "submission.csv"

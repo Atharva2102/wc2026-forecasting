@@ -1,7 +1,13 @@
 pandas
 numpy
 scipy
+xgboost
+pyarrow
 matplotlib
 seaborn
 jupyter
 ipykernel
+fastapi
+uvicorn
+anthropic>=0.111.0
+python-dotenv
